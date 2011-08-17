@@ -1,0 +1,29 @@
+KATOKORBO
+
+    http://github.com/witek/katokorbo
+    mailto:wi@koczewski.de
+
+	
+DESCRIPTION
+
+    Katokorbo is a Java web application runtime environment based on
+    Apache Tomcat. It is like WebStart for web applications.
+
+
+COPYING
+
+    Copyright 2011, Witoslaw Koczewski <wi@koczewski.de>
+
+    Katokorbo is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Katokorbo is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with Katokorbo. If not, see <http://www.gnu.org/licenses/>.
+

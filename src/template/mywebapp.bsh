@@ -1,0 +1,8 @@
+#!/bin/bash
+
+URL=http://kunagi.org/katokorbo.properties
+PORT=9071
+
+TOMCAT_JARS=catalina.jar:tomcat-coyote.jar:tomcat-juli.jar:servlet-api.jar:annotations-api.jar
+
+java -classpath katokorbo.jar:$TOMCAT_JARS katokorbo.Katokorbo --title Kunagi --port $PORT $URL

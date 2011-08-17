@@ -1,0 +1,45 @@
+<project name="katokorbo" default="package" basedir=".">
+
+	<property name="tomcat.dir" value="/opt/tomcat" />
+	
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="build/classes" />
+		<copy todir="build/classes" preservelastmodified="true">
+			<fileset dir="src/java" />
+		</copy>
+		<javac srcdir="build/classes" destdir="build/classes" encoding="UTF-8" nowarn="true" debug="true" debuglevel="lines,vars,source">
+			<classpath>
+				<fileset dir="/opt/tomcat/lib" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="package" depends="compile">
+		<jar destfile="build/katokorbo.jar" basedir="build/classes"/>
+
+		<mkdir dir="build/template-package" />
+		<copy todir="build/template-package" preservelastmodified="true">
+			<fileset file="build/katokorbo.jar" />
+			<fileset dir="src/template" />
+			<fileset file="${tomcat.dir}/lib/catalina.jar" />
+            <fileset file="${tomcat.dir}/lib/tomcat-coyote.jar" />
+            <fileset file="${tomcat.dir}/bin/tomcat-juli.jar" />
+            <fileset file="${tomcat.dir}/lib/servlet-api.jar" />
+            <fileset file="${tomcat.dir}/lib/annotations-api.jar" />
+		</copy>
+	</target>
+	
+	<target name="release">
+		<mkdir dir="/var/www/servisto.de/projects/katokorbo/template-package" />
+        <copy todir="/var/www/servisto.de/projects/katokorbo/template-package" preservelastmodified="false">
+        	<fileset dir="build/template-package" />
+        </copy>
+	</target>
+	
+	<target name="continousIntegrationBuild" depends="clean, package, release" />
+
+</project>
