@@ -34,6 +34,7 @@
 	</target>
 	
 	<target name="release">
+		<delete dir="/var/www/servisto.de/projects/katokorbo/template-package" />
 		<mkdir dir="/var/www/servisto.de/projects/katokorbo/template-package" />
         <copy todir="/var/www/servisto.de/projects/katokorbo/template-package" preservelastmodified="false">
         	<fileset dir="build/template-package" />
