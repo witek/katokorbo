@@ -15,6 +15,7 @@
 package katokorbo;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,67 +25,63 @@ import katokorbo.TomcatRunner.StatusObserver;
 
 public class Katokorbo {
 
-	public static String appTitle;
-	public static String warUrl;
-	public static File warFile;
-	public static int port;
-
-	static File globalConfigDir;
-	static File appConfigDir;
+	static WebappConfig webappConfig = new WebappConfig();
 	static StatusWindow window;
 	static TomcatRunner tomcat;
 
+	static String url;
+	static File globalConfigDir;
+
 	private static boolean shuttingdown;
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		parseArgs(Arrays.asList(args));
-		readConfig();
+		loadConfig();
 		window = new StatusWindow();
-		checkExclusiveLock();
-		downloadWar();
-		startTomcat();
+		try {
+			checkExclusiveLock();
+			webappConfig.update(url);
+			if (shuttingdown || !webappConfig.getWarFile().exists()) return;
+			startTomcat();
+		} catch (Throwable ex) {
+			window.setFailed("Startup failed.");
+			error(ex);
+		}
 	}
 
-	private static void readConfig() {
+	private static void loadConfig() {
 		globalConfigDir = new File(System.getProperty("user.home") + "/.katokorbo");
 		Utl.createDirectory(globalConfigDir);
-
-		String app = warUrl == null ? warFile.getPath() : warUrl;
-		appConfigDir = new File(globalConfigDir.getPath() + "/" + Utl.toFileCompatibleString(app));
-		Utl.createDirectory(appConfigDir);
-	}
-
-	private static void downloadWar() {
-		if (warUrl == null) return;
-		WarDownloader downloader = new WarDownloader(warUrl);
-		warFile = downloader.downloadIfNew();
+		webappConfig.load(new File(globalConfigDir.getPath() + "/" + Utl.toFileCompatibleString(url)));
 	}
 
 	private static void parseArgs(List<String> args) {
-		if (args.isEmpty()) {
-			Utl.log("DEVELOPER MODE");
-			port = 9060;
-			appTitle = "Katokorbo";
-			warFile = new File("/home/witek/inbox/kunagi.war");
-			return;
-		}
-		String war = args.get(args.size() - 1);
-		if (war.contains("://")) {
-			warUrl = war;
-		} else {
-			warFile = new File(war);
-		}
+		args = new ArrayList<String>(args);
 
 		int titleIdx = args.indexOf("--title");
-		if (titleIdx >= 0) appTitle = args.get(titleIdx + 1);
+		if (titleIdx >= 0) {
+			webappConfig.setTitle(args.get(titleIdx + 1));
+			args.remove(titleIdx);
+			args.remove(titleIdx);
+		}
 
 		int portIdx = args.indexOf("--port");
-		if (portIdx >= 0) port = Integer.parseInt(args.get(portIdx + 1));
+		if (portIdx >= 0) {
+			webappConfig.setPort(Integer.parseInt(args.get(portIdx + 1)));
+			args.remove(portIdx);
+			args.remove(portIdx);
+		}
+
+		if (args.isEmpty()) {
+			error("Missing command line argument <webapp-url>", true);
+			return;
+		}
+		url = args.get(args.size() - 1);
 	}
 
 	private static void startTomcat() {
 		if (shuttingdown) return;
-		tomcat = new TomcatRunner(port, warFile, new StatusObserver() {
+		tomcat = new TomcatRunner(webappConfig.getPort(), webappConfig.getWarFile(), new StatusObserver() {
 
 			@Override
 			public void onStartFailed(String message) {
@@ -114,7 +111,7 @@ public class Katokorbo {
 		try {
 			new ExclusiveFileLock(file.getAbsoluteFile());
 		} catch (ExclusiveFileLock.FileLockedException ex) {
-			error(appTitle + " is already running.", true);
+			error(webappConfig.getTitle() + " is already running.", true);
 		}
 	}
 

@@ -14,14 +14,23 @@
  */
 package katokorbo;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
@@ -30,6 +39,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import javax.imageio.ImageIO;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
@@ -45,9 +55,108 @@ public class Utl {
 			} else {
 				sb.append(" ");
 			}
-			sb.append(s);
+			sb.append(toString(s));
 		}
 		System.out.println(sb.toString());
+	}
+
+	public static String downloadUrlToString(String url) {
+		BufferedReader in = new BufferedReader(openUrlReader(url));
+		String s = readToString(in);
+		close(in);
+		return s;
+	}
+
+	public static String readFile(File file) {
+		try {
+			return readToString(new FileInputStream(file));
+		} catch (FileNotFoundException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	public static String readToString(InputStream is) {
+		try {
+			return readToString(new InputStreamReader(is, "utf-8"));
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	public static String readToString(Reader reader) {
+		StringBuffer sb = new StringBuffer();
+		BufferedReader in;
+		in = new BufferedReader(reader);
+		int ch;
+		try {
+			while ((ch = in.read()) >= 0) {
+				sb.append((char) ch);
+			}
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		return sb.toString();
+	}
+
+	public static void close(Reader in) {
+		if (in == null) return;
+		try {
+			in.close();
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	public static void writeFile(File file, String data) {
+		File parent = file.getParentFile();
+		if (parent != null) createDirectory(parent);
+		PrintWriter out;
+		try {
+			out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8")));
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		out.print(data);
+		out.close();
+	}
+
+	public static Reader openUrlReader(String url) {
+		URLConnection connection = openUrlConnection(url);
+		String encoding = connection.getContentEncoding();
+		if (encoding == null) encoding = "utf-8";
+		try {
+			return new InputStreamReader(connection.getInputStream(), encoding);
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	public static String toString(Object o) {
+		if (o == null) return "null";
+		if (o instanceof Throwable) return getMessage((Throwable) o);
+		return o.toString();
+	}
+
+	public static BufferedImage loadImage(File file) {
+		BufferedImage image;
+		try {
+			image = ImageIO.read(file);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		if (image == null) throw new RuntimeException("Unsupported image format.");
+		return image;
+	}
+
+	public static String getMessage(Throwable ex) {
+		return getRootCause(ex).getLocalizedMessage();
+	}
+
+	public static Throwable getRootCause(Throwable ex) {
+		Throwable cause = ex.getCause();
+		return cause == null ? ex : getRootCause(cause);
 	}
 
 	public static String toFileCompatibleString(String s) {

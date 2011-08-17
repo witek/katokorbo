@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -40,13 +41,22 @@ public class StatusWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new Adapter());
 
-		setTitle(Katokorbo.appTitle);
+		update();
+
 		pack();
 		setLocation(100, 100);
 		setVisible(true);
 	}
 
+	public void update() {
+		setTitle(Katokorbo.webappConfig.getTitle());
+
+		File windowIconFile = Katokorbo.webappConfig.getWindowIconFile();
+		if (windowIconFile.exists()) setIconImage(Utl.loadImage(windowIconFile));
+	}
+
 	public void setStatus(String status) {
+		Utl.log(status);
 		statusField.setText(status);
 	}
 
