@@ -25,6 +25,7 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.TitledBorder;
 
 public class SysOutPanel extends JPanel {
 
@@ -42,6 +43,8 @@ public class SysOutPanel extends JPanel {
 		scroller.setPreferredSize(new Dimension(750, 450));
 		scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+		scroller.setBorder(new TitledBorder("Log"));
 
 		add(scroller, BorderLayout.CENTER);
 

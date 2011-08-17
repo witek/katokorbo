@@ -114,19 +114,28 @@ public class Katokorbo {
 		try {
 			new ExclusiveFileLock(file.getAbsoluteFile());
 		} catch (ExclusiveFileLock.FileLockedException ex) {
-			error(appTitle + " is already running.");
+			error(appTitle + " is already running.", true);
 		}
 	}
 
 	public static void error(Throwable ex) {
-		error(ex.getMessage());
+		error(ex, false);
+	}
+
+	public static void error(Throwable ex, boolean shutdown) {
+		error(ex.getMessage(), shutdown);
 	}
 
 	public static void error(String message) {
+		error(message, false);
+	}
+
+	public static void error(String message, boolean shutdown) {
 		System.err.println("ERROR: " + message);
+		if (shutdown) window.setFailed(message);
 		if (shuttingdown) return;
 		JOptionPane.showMessageDialog(window, message, "Error", JOptionPane.ERROR_MESSAGE);
-		shutdown(1);
+		if (shutdown) shutdown(1);
 	}
 
 	public static void shutdown(int retValue) {
