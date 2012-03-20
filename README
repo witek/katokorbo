@@ -27,3 +27,29 @@ COPYING
     You should have received a copy of the GNU Affero General Public License
     along with Katokorbo. If not, see <http://www.gnu.org/licenses/>.
 
+
+TUTORIAL
+
+    This is how you can start your own webapp with Katokorbo:
+    
+    1. Put your webapp.war on the web.
+    
+    2. Create a katokorbo.properties file with following properties:
+    
+        title=Your application title
+        port=9065
+        warUrl=http://your-domain.com/webapp.war
+        version=1.0
+      
+       Optionally add more properties:
+      
+        windowIconUrl=http://your-domain/webapp-icon-64.png
+        eulaUrl=http://your-domain/webapp-eula.txt
+        
+    3. Put this properties file on the web.
+    
+    4. Download katokorbo.jar
+    
+    5. Start Katokorbo:
+    
+        java -jar katokorbo.jar http://your-domain/katokorbo.properties
