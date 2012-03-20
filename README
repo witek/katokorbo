@@ -28,6 +28,12 @@ COPYING
     along with Katokorbo. If not, see <http://www.gnu.org/licenses/>.
 
 
+INCLUDED LIBRARIES
+
+    The katokorbo.jar file comes bundeled with embedded Tomcat, which is
+    licensend under Apache License, Version 2.0
+
+
 TUTORIAL
 
     This is how you can start your own webapp with Katokorbo:
