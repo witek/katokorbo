@@ -19,17 +19,27 @@
 	</target>
 	
 	<target name="package" depends="compile">
-		<jar destfile="build/katokorbo.jar" basedir="build/classes"/>
+	  <mkdir dir="build/tomcat-classes" />
+    <unjar src="${tomcat.dir}/bin/tomcat-juli.jar" dest="build/tomcat-classes" />
+    <unjar src="${tomcat.dir}/lib/catalina.jar" dest="build/tomcat-classes" />
+		<unjar src="${tomcat.dir}/lib/tomcat-coyote.jar" dest="build/tomcat-classes" />
+    <unjar src="${tomcat.dir}/lib/servlet-api.jar" dest="build/tomcat-classes" />
+    <unjar src="${tomcat.dir}/lib/annotations-api.jar" dest="build/tomcat-classes" />
+		
+		<jar destfile="build/katokorbo.jar" manifest="src/jar/MANIFEST.MF">
+		  <fileset dir="build/classes" />
+			<fileset dir="build/tomcat-classes" />
+		</jar>
 
 		<mkdir dir="build/template-package" />
 		<copy todir="build/template-package" preservelastmodified="true">
 			<fileset file="build/katokorbo.jar" />
 			<fileset dir="src/template" />
+      <fileset file="${tomcat.dir}/bin/tomcat-juli.jar" />
 			<fileset file="${tomcat.dir}/lib/catalina.jar" />
-            <fileset file="${tomcat.dir}/lib/tomcat-coyote.jar" />
-            <fileset file="${tomcat.dir}/bin/tomcat-juli.jar" />
-            <fileset file="${tomcat.dir}/lib/servlet-api.jar" />
-            <fileset file="${tomcat.dir}/lib/annotations-api.jar" />
+      <fileset file="${tomcat.dir}/lib/tomcat-coyote.jar" />
+      <fileset file="${tomcat.dir}/lib/servlet-api.jar" />
+      <fileset file="${tomcat.dir}/lib/annotations-api.jar" />
 		</copy>
 	</target>
 	

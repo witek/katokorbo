@@ -129,7 +129,7 @@ public class Katokorbo {
 
 	public static void error(String message, boolean shutdown) {
 		System.err.println("ERROR: " + message);
-		if (shutdown) window.setFailed(message);
+		if (shutdown && window != null) window.setFailed(message);
 		if (shuttingdown) return;
 		JOptionPane.showMessageDialog(window, message, "Error", JOptionPane.ERROR_MESSAGE);
 		if (shutdown) shutdown(1);
