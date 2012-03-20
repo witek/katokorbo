@@ -38,7 +38,7 @@ TUTORIAL
     
         title=Your application title
         port=9065
-        warUrl=http://your-domain.com/webapp.war
+        warUrl=http://your-domain/webapp.war
         version=1.0
       
        Optionally add more properties:
@@ -48,7 +48,7 @@ TUTORIAL
         
     3. Put this properties file on the web.
     
-    4. Download katokorbo.jar
+    4. Download https://github.com/downloads/witek/katokorbo/katokorbo.jar
     
     5. Start Katokorbo:
     
