@@ -25,6 +25,7 @@ import org.apache.catalina.LifecycleEvent;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Embedded;
 
 public class TomcatRunner {
@@ -93,6 +94,7 @@ public class TomcatRunner {
 		container.setCatalinaHome(workdir.getPath());
 
 		Context context = container.createContext("/", webappdir.getAbsolutePath());
+		context.setLoader(new WebappLoader(getClass().getClassLoader()));
 
 		// create host
 		Host localHost = container.createHost("localHost", webappsdir.getAbsolutePath());

@@ -35,6 +35,7 @@ public class Katokorbo {
 	private static boolean shuttingdown;
 
 	public static void main(String[] args) {
+		System.setSecurityManager(null);
 		parseArgs(Arrays.asList(args));
 		loadConfig();
 		window = new StatusWindow();
